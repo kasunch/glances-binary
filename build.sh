@@ -10,7 +10,10 @@ SCRIPT_DIR_FULL=$(readlink -f "${SCRIPT_DIR}")
 PYTHON_VENV="build-env"
 BUILD_DIR="${SCRIPT_DIR_FULL}/build"
 PYTHON_VENV_DIR="${BUILD_DIR}/venv/${PYTHON_VENV}"
-HIDDEN_IMPORTS_FILE="${SCRIPT_DIR_FULL}/hidden-imports.txt"
+
+HIDDEN_IMPORTS_FILE="${SCRIPT_DIR_FULL}/pyinstaller-hidden-imports.txt"
+ADDITIONAL_HOOKS_DIR="${SCRIPT_DIR_FULL}/pyinstaller-hooks"
+
 VERSION_FILE="${BUILD_DIR}/version.txt"
 
 mkdir -p "${SCRIPT_DIR_FULL}"
@@ -28,6 +31,8 @@ while IFS= read -r module || [[ -n "${module}" ]]; do
     module_name=$(echo "${module}" | xargs)
     pyinstaller_cmd+="--hidden-import=${module_name} "
 done <"${HIDDEN_IMPORTS_FILE}"
+
+pyinstaller_cmd+="--additional-hooks-dir=${ADDITIONAL_HOOKS_DIR} "
 
 echo "Running command: ${pyinstaller_cmd}"
 
